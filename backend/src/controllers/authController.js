@@ -1,4 +1,10 @@
 import User from "../models/User.js";
+import jwt from "jsonwebtoken"
+const genrateToken=(id)=>{
+    return jwt.sign({id},process.env.JWT_SECRET,{
+        expiresIn:"30d",
+    });
+}
 export const registerUser = async (req, res) => {
     const { name, email, password, role } = req.body;
     try {
@@ -12,6 +18,7 @@ export const registerUser = async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            token: genrateToken(user._id),
             message: "User registered successfully"
         });
     }
@@ -29,6 +36,7 @@ export const loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                token:genrateToken(user._id),
                 message: "User logged in successfully"
             });
         }
