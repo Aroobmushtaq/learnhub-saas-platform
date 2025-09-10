@@ -30,7 +30,8 @@ export const updateCourse = async (req, res) => {
         const course = await Course.findById(req.params.id);
         if (!course) return res.status(404).json({ message: "Course not found" });
 
-        if (course.instructor.toString() !== req.user._id.toString()) {
+        if (course.instructor.toString() !== req.user._id.toString() &&
+            req.user.role !== "admin") {
             return res.status(401).json({ message: "Not authorized" });
         }
 
@@ -52,7 +53,8 @@ export const deleteCourse = async (req, res) => {
         const course = await Course.findById(req.params.id);
         if (!course) return res.status(404).json({ message: "Course not found" });
 
-        if (course.instructor.toString() !== req.user._id.toString()) {
+        if (course.instructor.toString() !== req.user._id.toString() &&
+            req.user.role !== "admin") {
             return res.status(401).json({ message: "Not authorized" });
         }
 
