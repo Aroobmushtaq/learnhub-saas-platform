@@ -47,4 +47,4 @@ export const createCheckoutSession = async (req, res) => {
             },
             success_url: `${YOUR_DOMAIN}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${YOUR_DOMAIN}/courses/${courseId}`,
-        });
+        })
