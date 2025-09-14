@@ -48,3 +48,21 @@ export const createCheckoutSession = async (req, res) => {
             success_url: `${YOUR_DOMAIN}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
             cancel_url: `${YOUR_DOMAIN}/courses/${courseId}`,
         })
+
+        // create a pending Payment record (optional)
+        await Payment.create({
+            user: req.user._id,
+            course: courseId,
+            stripeSessionId: session.id,
+            amount: Math.round(course.price * 100),
+            currency: "usd",
+            status: "pending",
+        });
+
+        // Return session URL so frontend can redirect
+        res.json({ url: session.url, id: session.id });
+    } catch (error) {
+        console.error("createCheckoutSession error:", error);
+        res.status(500).json({ message: error.message });
+    }
+};
