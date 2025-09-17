@@ -31,12 +31,12 @@ export const createCheckoutSession = async (req, res) => {
       line_items: [
         {
           price_data: {
-            currency: "usd", // change if needed
+            currency: "usd",
             product_data: {
               name: course.title,
               description: course.description,
             },
-            unit_amount: Math.round(course.price * 100), // price in cents
+            unit_amount: Math.round(course.price * 100),
           },
           quantity: 1,
         },
@@ -45,8 +45,10 @@ export const createCheckoutSession = async (req, res) => {
         userId: req.user._id.toString(),
         courseId: courseId.toString(),
       },
-      success_url: `${YOUR_DOMAIN}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${YOUR_DOMAIN}/courses/${courseId}`,
+      // success_url: `${YOUR_DOMAIN}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
+      // cancel_url: `${YOUR_DOMAIN}/courses/${courseId}`,
+      success_url: "http://localhost:5000/success?session_id={CHECKOUT_SESSION_ID}",
+      cancel_url: "http://localhost:5000/cancel",
     });
 
     // create a pending Payment record (optional)
