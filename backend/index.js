@@ -2,13 +2,13 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
-
 import router from "./src/routes/authRoutes.js";
 import courseRouter from "./src/routes/courseRoutes.js";
 import enrollmentRoutes from "./src/routes/enrollmentRoutes.js";
 import paymentRoutes from "./src/routes/paymentRoutes.js";
 import { stripeWebhook } from "./src/controllers/paymentController.js";
-
+import lessonRoutes from "./src/routes/lessonRoutes.js";
+import instructorRoutes from "./src/routes/instructorRoutes.js";
 connectDB();
 dotenv.config();
 
@@ -29,17 +29,16 @@ app.use("/api/auth", router);
 app.use("/api/courses", courseRouter);
 app.use("/api/enrollments", enrollmentRoutes);
 app.use("/api/payments", paymentRoutes);
-
+app.use("/api/lessons", lessonRoutes);
+app.use("/api/instructor", instructorRoutes);
 app.get("/", (req, res) => {
   res.send("server is running");
 });
-
 app.get("/success", (req, res) => {
-  res.send("✅ Payment successful! (Backend test)");
+  res.send("Payment successful! (Backend test)");
 });
-
 app.get("/cancel", (req, res) => {
-  res.send("❌ Payment cancelled! (Backend test)");
+  res.send("Payment cancelled! (Backend test)");
 });
 
 const PORT = process.env.PORT || 5000;
