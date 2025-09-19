@@ -1,8 +1,9 @@
 import exspress from 'express';
-import { createCourse, getCourses, updateCourse, deleteCourse, publishCourse, unpublishCourse } from '../controllers/courseController.js';
+import { createCourse, getCourses, updateCourse, deleteCourse, publishCourse, unpublishCourse, searchCourses } from '../controllers/courseController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { authorizeRoles } from '../middleware/roleMiddleware.js';
 const router = exspress.Router();
+router.get("/search", searchCourses);
 router.route("/")
     .get(getCourses)
     .post(protect, authorizeRoles("instructor", "admin"), createCourse);

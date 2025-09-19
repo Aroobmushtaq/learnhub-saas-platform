@@ -109,3 +109,29 @@ export const unpublishCourse = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const searchCourses = async (req, res) => {
+  try {
+    const { keyword, category, level } = req.query;
+
+    // Dynamic filter object
+    let filter = { published: true }; // sirf published courses dikhane ke liye
+
+    if (keyword) {
+      filter.title = { $regex: keyword, $options: "i" }; // title me search
+    }
+    if (category) {
+      filter.category = category;
+    }
+    if (level) {
+      filter.level = level;
+    }
+
+    const courses = await Course.find(filter)
+      .populate("instructor", "name email");
+
+    res.json(courses);
+  } catch (error) {
+    res.status(500).json({ message: "Error searching courses" });
+  }
+};

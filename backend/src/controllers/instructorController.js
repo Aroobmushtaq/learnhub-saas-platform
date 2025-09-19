@@ -1,5 +1,7 @@
 import Course from "../models/Course.js";
 import Enrollment from "../models/Enrollment.js";
+import User from "../models/User.js";
+import Lesson from "../models/Lesson.js";
 export const getInstructorCourses = async (req, res) => {
   try {
     const courses = await Course.find({ instructor: req.user._id });
@@ -27,5 +29,89 @@ export const getCourseWithStudents = async (req, res) => {
     res.json({ course, students });
   } catch (error) {
     res.status(500).json({ message: "Error fetching course details" });
+  }
+};
+export const getInstructorProfile = async (req, res) => {
+  try {
+    console.log("REQ.USER from middleware:", req.user);  // 👈 add this
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user || user.role !== "instructor") {
+      return res.status(404).json({ message: "Instructor not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    console.error("PROFILE ERROR:", error.message); // 👈 add this
+    res.status(500).json({ message: "Error fetching profile" });
+  }
+};
+
+export const updateInstructorProfile = async (req, res) => {
+  try {
+    const { name, bio, expertise } = req.body;
+
+    const instructor = await User.findById(req.user._id);
+
+    if (!instructor || instructor.role !== "instructor") {
+      return res.status(404).json({ message: "Instructor not found" });
+    }
+
+    if (name) instructor.name = name;
+    if (bio) instructor.bio = bio;
+    if (expertise) instructor.expertise = expertise;
+
+    await instructor.save();
+
+    res.json({ message: "Profile updated successfully", instructor });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating instructor profile" });
+  }
+};
+
+//  Update Lesson (Instructor only)
+export const updateLesson = async (req, res) => {
+  try {
+    const { title, content, videoUrl } = req.body;
+    const lessonId = req.params.lessonId;
+
+    const lesson = await Lesson.findById(lessonId).populate("course");
+
+    if (!lesson) return res.status(404).json({ message: "Lesson not found" });
+
+    // Sirf course ka instructor hi edit kar sake
+    if (lesson.course.instructor.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to edit this lesson" });
+    }
+
+    lesson.title = title || lesson.title;
+    lesson.content = content || lesson.content;
+    lesson.videoUrl = videoUrl || lesson.videoUrl;
+
+    await lesson.save();
+
+    res.json({ message: "Lesson updated successfully", lesson });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating lesson" });
+  }
+};
+
+//  Delete Lesson (Instructor only)
+export const deleteLesson = async (req, res) => {
+  try {
+    const lessonId = req.params.lessonId;
+
+    const lesson = await Lesson.findById(lessonId).populate("course");
+
+    if (!lesson) return res.status(404).json({ message: "Lesson not found" });
+
+    // Sirf instructor hi delete kar sake
+    if (lesson.course.instructor.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not authorized to delete this lesson" });
+    }
+
+    await lesson.deleteOne();
+
+    res.json({ message: "Lesson deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting lesson" });
   }
 };
