@@ -146,8 +146,6 @@ Course + Students → ```bash GET /api/instructor/course/:id```
 
 Get All Users → ```bash GET /api/admin/users ```
 
-Block/Unblock User → ```bash PATCH /api/admin/users/:id/block ```
-
 Delete User → ```bash DELETE /api/admin/users/:id```
 
 Manage Courses → ```bash Can update/delete/publish any course```
