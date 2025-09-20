@@ -30,17 +30,6 @@ It provides RESTful APIs for:
 
 - Stripe Payment Integration
 
-## Folder Structure
-backend/
-│── src/
-│   ├── models/          # MongoDB Models
-│   ├── routes/          # Express Routes
-│   ├── controllers/     # Business Logic
-│   ├── middleware/      # Auth & Custom Middleware
-│── .env                 # Environment Variables
-│── index.js             # Entry Point
-│── package.json         
-
 ## Setup Instructions
 
 ### Clone the repo:
@@ -84,25 +73,34 @@ Body:
 
 ```bash
 POST /api/auth/login
+```
 Returns JWT Token.
-```
+
 ## Course APIs
-Create Course (Instructor only)
-```bash
-POST /api/courses
-```
-Get All Courses (Public)
-```bash
-GET /api/courses
-```
-Get Single Course
-```bash
-GET /api/courses/:id
-```
-Publish/Unpublish
-```bash
-PATCH /api/courses/:id/publish
-```
+### Instructor
+
+Create Course → ```bash POST /api/courses```
+
+Update Course → ```bash PUT /api/courses/:id```
+
+Delete Course → ```bash DELETE /api/courses/:id```
+
+Get Own Courses → ```bash GET /api/instructor/courses```
+
+Publish/Unpublish Course → ```bash PATCH /api/courses/:id/publish```
+
+### Public
+
+Get All Courses → ```bash GET /api/courses ```
+
+Get Single Course → ```bash GET /api/courses/:id ```
+
+### Admin
+
+Update Any Course → ```bash PUT /api/admin/courses/:id```
+
+Delete Any Course → ```bash DELETE /api/admin/courses/:id```
+
 ## Lesson APIs
 Add Lesson (Instructor only)
 ```bash
