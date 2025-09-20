@@ -94,6 +94,7 @@ Publish/Unpublish Course → ```bash PATCH /api/courses/:id/publish```
 Get All Courses → ```bash GET /api/courses ```
 
 Get Single Course → ```bash GET /api/courses/:id ```
+
 Search & Filter Courses →
 ```bash GET /api/courses/search?keyword=html&category=programming ```
 
