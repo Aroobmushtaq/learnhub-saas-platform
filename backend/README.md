@@ -102,68 +102,41 @@ Update Any Course → ```bash PUT /api/admin/courses/:id```
 Delete Any Course → ```bash DELETE /api/admin/courses/:id```
 
 ## Lesson APIs
-Add Lesson (Instructor only)
-```bash
-POST /api/lessons/:courseId
-```
-Get Lessons (Enrolled Students only)
-```bash
-GET /api/lessons/:courseId
-```
-Update Lesson
-```bash
-PUT /api/lessons/:lessonId
-```
-Delete Lesson
-```bash
-DELETE /api/lessons/:lessonId
-```
-## Enrollment APIs
-Enroll after Payment
-Handled via Stripe Webhook → Creates enrollment record.
 
-My Courses (Student)
-```bash
-GET /api/my-courses
-```
-Instructor Courses
-```bash
-GET /api/instructor/courses
-```
+Add Lesson (Instructor only) → ```bash POST /api/lessons/:courseId```
+
+Get Lessons (Enrolled Students only) → ```bash GET /api/lessons/:courseId```
+
+Update Lesson → ```bash PUT /api/lessons/:lessonId ```
+
+Delete Lesson → ```bash DELETE /api/lessons/:lessonId```
+
+## Enrollment APIs
+
+Enroll after Payment → ```bash Handled via Stripe Webhook ```
+
+My Courses (Student) → ```bash GET /api/my-courses```
+
+Instructor Courses → ```bash GET /api/instructor/courses```
+
 ## Payment APIs
-Create Checkout Session
-```bash
-POST /api/payments/create-checkout-session/:courseId
-```
-Webhook
-```bash
-POST /api/payments/webhook
-```
-(Stripe CLI required for local testing)
+
+Create Checkout Session → ```bash POST /api/payments/create-checkout-session/:courseId```
+
+Webhook (Stripe CLI required for local testing) → ```bash POST /api/payments/webhook```
 
 ## Instructor APIs
 
-Profile
-```bash
-GET /api/instructor/profile
-```
-Course + Students 
-```bash
-GET /api/instructor/course/:id
-```
+Profile → ```bash GET /api/instructor/profile```
+
+Course + Students → ```bash GET /api/instructor/course/:id```
+
 ## Admin APIs
 
-Get All Users 
-```bash
-GET /api/admin/users
-```
-Block/Unblock User
-```bash
-PATCH /api/admin/users/:id/block
-```
-Delete User 
-```bash
-DELETE /api/admin/users/:id
-```
+Get All Users → ```bash GET /api/admin/users ```
 
+Block/Unblock User → ```bash PATCH /api/admin/users/:id/block ```
 
+Delete User → ```bash DELETE /api/admin/users/:id```
+
+Manage Courses → ```bash Can update/delete/publish any course```
