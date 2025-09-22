@@ -1,19 +1,27 @@
-import './App.css';
-import About from './about/About';
-function App() {
-      let fruits=["apple","banana","grapes"]
-      let car="this is a car"
+// src/App.js (partial)
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./pages/Home";
+import Courses from "./pages/Courses";
+import CourseDetails from "./pages/CourseDetails";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import MyCourses from "./pages/MyCourses";
+import PrivateRoute from "./components/PrivateRoute";
+
+function App(){
   return (
-    
-    <>
-      <h1 className='font-bold underline text-3xl'>Hello React</h1>
-      <p>Welcome to React world!</p>
-      {
-        fruits.map((fruit,index)=><h1 key={fruit}> Fruits is {fruit} and index no is {index}</h1>)
-      }
-      <About para={car}/>
-    </>
+    <Router>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/courses" element={<Courses />} />
+        <Route path="/courses/:id" element={<CourseDetails />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/my-courses" element={<PrivateRoute><MyCourses/></PrivateRoute>} />
+      </Routes>
+    </Router>
   );
 }
-
 export default App;
