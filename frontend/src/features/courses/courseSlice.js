@@ -1,48 +1,50 @@
+// src/features/courses/courseSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import courseService from "./courseService";
+import axios from "axios";
 
-const initialState = {
-  courses: [],
-  isLoading: false,
-  isError: false,
-  isSuccess: false,
-  message: "",
-};
-
-// Get all courses (with optional search query)
-export const getCourses = createAsyncThunk(
-  "courses/getAll",
-  async (query, thunkAPI) => {
+// ✅ Fetch all courses
+export const fetchCourses = createAsyncThunk(
+  "courses/fetchCourses",
+  async (query = "", thunkAPI) => {
     try {
-      return await courseService.getCourses(query);
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+      const res = await axios.get(`http://localhost:5000/api/courses${query}`);
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch courses"
+      );
     }
   }
 );
 
 const courseSlice = createSlice({
   name: "courses",
-  initialState,
+  initialState: {
+    courses: [],   // list of courses
+    isLoading: false,
+    isError: false,
+    message: "",
+  },
   reducers: {
-    reset: (state) => {
-      state.isLoading = false;
+    // ✅ Reset error state
+    clearError: (state) => {
       state.isError = false;
-      state.isSuccess = false;
       state.message = "";
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getCourses.pending, (state) => {
+      // 🔹 Fetch all courses
+      .addCase(fetchCourses.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getCourses.fulfilled, (state, action) => {
+      .addCase(fetchCourses.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
         state.courses = action.payload;
+        state.isError = false;
+        state.message = "";
       })
-      .addCase(getCourses.rejected, (state, action) => {
+      .addCase(fetchCourses.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.message = action.payload;
@@ -50,5 +52,5 @@ const courseSlice = createSlice({
   },
 });
 
-export const { reset } = courseSlice.actions;
+export const { clearError } = courseSlice.actions;
 export default courseSlice.reducer;
