@@ -17,12 +17,17 @@ export default function CourseDetails() {
       alert("Please login first!");
       return;
     }
-    dispatch(enrollCourse(course._id));
-    alert("Enrollment successful!");
+    try {
+      dispatch(enrollCourse(course._id));
+      alert("Enrollment successful!");
+    } catch (error) {
+      alert("Enrollment failed: " + error.message);
+
+    }
   };
 
   if (!course) return <p className="text-red-500">Course not found</p>;
-  
+
 
   return (
     <div className="p-6">
