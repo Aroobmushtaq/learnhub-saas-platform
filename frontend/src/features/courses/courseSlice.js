@@ -3,30 +3,43 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // ✅ Fetch all courses
-export const fetchCourses = createAsyncThunk(
-  "courses/fetchCourses",
-  async (query = "", thunkAPI) => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/courses${query}`);
-      return res.data;
-    } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || "Failed to fetch courses"
-      );
-    }
+export const fetchCourses = createAsyncThunk("courses/fetchCourses", async (query = "", thunkAPI) => {
+  try {
+    const res = await axios.get(`http://localhost:5000/api/courses${query}`);
+    return res.data;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data?.message || "Failed to fetch courses");
   }
-);
+});
+
+// ✅ Enroll course
+export const enrollCourse = createAsyncThunk("courses/enrollCourse", async (courseId, thunkAPI) => {
+  try {
+    const token = thunkAPI.getState().auth.user?.token; // ✅ get token from Redux
+    if (!token) throw new Error("No token found");
+
+    const res = await axios.post(
+      `http://localhost:5000/api/enrollments/${courseId}`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    return res.data;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.response?.data?.message || "Enrollment failed");
+  }
+});
 
 const courseSlice = createSlice({
   name: "courses",
   initialState: {
-    courses: [],   // list of courses
+    courses: [],
     isLoading: false,
     isError: false,
+    isSuccess: false,
     message: "",
   },
   reducers: {
-    // ✅ Reset error state
     clearError: (state) => {
       state.isError = false;
       state.message = "";
@@ -34,18 +47,23 @@ const courseSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // 🔹 Fetch all courses
-      .addCase(fetchCourses.pending, (state) => {
-        state.isLoading = true;
-      })
+      // fetch courses
+      .addCase(fetchCourses.pending, (state) => { state.isLoading = true; })
       .addCase(fetchCourses.fulfilled, (state, action) => {
         state.isLoading = false;
         state.courses = action.payload;
-        state.isError = false;
-        state.message = "";
       })
       .addCase(fetchCourses.rejected, (state, action) => {
         state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload;
+      })
+      // enroll course
+      .addCase(enrollCourse.fulfilled, (state, action) => {
+        state.isSuccess = true;
+        state.message = "Enrolled successfully";
+      })
+      .addCase(enrollCourse.rejected, (state, action) => {
         state.isError = true;
         state.message = action.payload;
       });
