@@ -6,7 +6,7 @@ import CourseDetails from "./pages/CourseDetails";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyCourses from "./pages/MyCourses";
-import PrivateRoute from "./components/PrivateRoute";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 function App(){
   return (
@@ -18,7 +18,8 @@ function App(){
         <Route path="/courses/:id" element={<CourseDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/my-courses" element={<PrivateRoute><MyCourses/></PrivateRoute>} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/my-courses" element={<MyCourses />} />
       </Routes>
     </Router>
   );

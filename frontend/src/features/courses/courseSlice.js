@@ -34,6 +34,7 @@ const courseSlice = createSlice({
   name: "courses",
   initialState: {
     courses: [],
+    myCourses: [],
     isLoading: false,
     isError: false,
     isSuccess: false,
@@ -66,9 +67,41 @@ const courseSlice = createSlice({
       .addCase(enrollCourse.rejected, (state, action) => {
         state.isError = true;
         state.message = action.payload;
-      });
-  },
+      })
+      .addCase(fetchMyCourses.pending, (state) => {
+        state.isLoading = true;
+      })
+    .addCase(fetchMyCourses.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.myCourses = action.payload;
+      state.isError = false;
+      state.message = "";
+    })
+    .addCase(fetchMyCourses.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+      state.message = action.payload;
+    });
+},
 });
-
+// ✅ Fetch logged-in user's enrolled courses
+export const fetchMyCourses = createAsyncThunk(
+  "courses/fetchMyCourses",
+  async (_, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user?.token;
+      const res = await axios.get("http://localhost:5000/api/enrollments/my", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch my courses"
+      );
+    }
+  }
+);
 export const { clearError } = courseSlice.actions;
 export default courseSlice.reducer;

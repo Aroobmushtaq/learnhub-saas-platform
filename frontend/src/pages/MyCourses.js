@@ -1,32 +1,45 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchEnrolledCourses } from "../features/courses/enrolledSlice";
+import { fetchMyCourses } from "../features/courses/courseSlice";
 
 export default function MyCourses() {
   const dispatch = useDispatch();
-  const { courses, isLoading, isError, message } = useSelector((s) => s.enrolled);
+  const { myCourses, isLoading, isError, message } = useSelector(
+    (state) => state.courses
+  );
 
   useEffect(() => {
-    dispatch(fetchEnrolledCourses());
+    dispatch(fetchMyCourses());
   }, [dispatch]);
 
-  if (isLoading) return <p className="p-6">Loading...</p>;
-  if (isError) return <p className="p-6 text-red-500">{message}</p>;
+  if (isLoading) return <p>Loading your courses...</p>;
+  if (isError) return <p className="text-red-500">{message}</p>;
 
   return (
     <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">My Enrolled Courses</h2>
-      {courses.length === 0 ? (
-        <p>You are not enrolled in any courses yet.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {courses.map((c) => (
-            <div key={c._id} className="border rounded-lg p-4 shadow bg-white">
-              <h3 className="text-lg font-semibold">{c.title}</h3>
-              <p className="text-sm text-gray-600">{c.description}</p>
+      <h1 className="text-2xl font-bold mb-6">My Enrolled Courses</h1>
+
+      {myCourses.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {myCourses.map((enroll) => (
+            <div
+              key={enroll._id}
+              className="bg-white border rounded-2xl shadow hover:shadow-lg transition p-5"
+            >
+              <h2 className="font-bold text-lg mb-2">
+                {enroll.course?.title || "Untitled Course"}
+              </h2>
+              <p className="text-gray-600">
+                {enroll.course?.description || "No description available"}
+              </p>
+              <p className="mt-3 font-semibold text-blue-600">
+                Price: ${enroll.course?.price ?? 0}
+              </p>
             </div>
           ))}
         </div>
+      ) : (
+        <p>You have not enrolled in any courses yet.</p>
       )}
     </div>
   );
