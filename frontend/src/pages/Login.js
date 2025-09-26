@@ -1,32 +1,53 @@
-// src/pages/Login.jsx
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { login, resetState } from "../features/auth/authSlice";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API from "../utils/axiosConfig";
 
-export default function Login() {
+export default function LoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, isLoading, isError, isSuccess, message } = useSelector(s => s.auth);
 
-  useEffect(() => {
-    if (user) navigate("/");
-    if (isSuccess) navigate("/");
-    dispatch(resetState());
-  }, [user, isSuccess, navigate, dispatch]);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await API.post("/auth/login", form);
 
-  const onChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
-  const onSubmit = (e) => { e.preventDefault(); dispatch(login(form)); };
+      localStorage.setItem("user", JSON.stringify(res.data));
+      if (res.data.role === "instructor") {
+        navigate("/instructor/courses");
+      } else {
+        navigate("/");
+      }
+    } catch (err) {
+      console.error("Error logging in:", err.response?.data || err.message);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form onSubmit={onSubmit} className="bg-white p-6 rounded shadow w-96">
-        <h2 className="text-xl font-bold mb-4">Login</h2>
-        {isError && <p className="text-red-500 mb-2">{message}</p>}
-        <input name="email" onChange={onChange} value={form.email} placeholder="Email" className="w-full p-2 border rounded mb-2"/>
-        <input name="password" onChange={onChange} type="password" value={form.password} placeholder="Password" className="w-full p-2 border rounded mb-4"/>
-        <button className="w-full bg-blue-600 text-white p-2 rounded">{isLoading ? "Loading..." : "Login"}</button>
+    <div className="p-6 max-w-md mx-auto">
+      <h1 className="text-2xl font-bold mb-4">Login</h1>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          className="w-full border p-2 rounded"
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={(e) => setForm({ ...form, password: e.target.value })}
+          className="w-full border p-2 rounded"
+          required
+        />
+
+        <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">
+          Login
+        </button>
       </form>
     </div>
   );
