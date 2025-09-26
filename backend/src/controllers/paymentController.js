@@ -45,10 +45,10 @@ export const createCheckoutSession = async (req, res) => {
         userId: req.user._id.toString(),
         courseId: courseId.toString(),
       },
-      // success_url: `${YOUR_DOMAIN}/payments/success?session_id={CHECKOUT_SESSION_ID}`,
-      // cancel_url: `${YOUR_DOMAIN}/courses/${courseId}`,
-      success_url: "http://localhost:5000/success?session_id={CHECKOUT_SESSION_ID}",
-      cancel_url: "http://localhost:5000/cancel",
+      success_url: `${YOUR_DOMAIN}/payment/success`,
+      cancel_url: `${YOUR_DOMAIN}/courses/${courseId}`,
+      // success_url: "http://localhost:5000/success?session_id={CHECKOUT_SESSION_ID}",
+      // cancel_url: "http://localhost:5000/cancel",
     });
 
     // create a pending Payment record (optional)
@@ -116,4 +116,24 @@ export const stripeWebhook = async (req, res) => {
 
   // Return a response to acknowledge receipt of the event
   res.json({ received: true });
+};
+// ✅ Verify payment session
+export const verifyPayment = async (req, res) => {
+  try {
+    const sessionId = req.params.sessionId;
+    const payment = await Payment.findOne({ stripeSessionId: sessionId }).populate("course");
+
+    if (!payment) return res.status(404).json({ message: "Payment not found" });
+
+    if (payment.status !== "paid") {
+      return res.json({ message: "Payment is still pending, please wait." });
+    }
+
+    res.json({
+      message: "Payment verified successfully! Enrollment confirmed.",
+      course: payment.course,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
