@@ -1,17 +1,23 @@
-// src/utils/axiosConfig.js
 import axios from "axios";
 
+// Create axios instance
 const API = axios.create({
-  baseURL: "http://localhost:5000",
-  headers: { "Content-Type": "application/json" },
+  baseURL: "http://localhost:5000/api", // backend base URL
 });
 
-API.interceptors.request.use((config) => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (user && user.token) {
-    config.headers.Authorization = `Bearer ${user.token}`;
-  }
-  return config;
-}, (error) => Promise.reject(error));
+// Attach token to every request
+API.interceptors.request.use(
+  (config) => {
+    // Get user object from localStorage
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (user?.token) {
+      config.headers.Authorization = `Bearer ${user.token}`;
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export default API;

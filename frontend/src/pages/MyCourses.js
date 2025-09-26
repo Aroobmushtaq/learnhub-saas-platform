@@ -1,46 +1,51 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMyCourses } from "../features/courses/courseSlice";
+import { Link } from "react-router-dom";
 
-export default function MyCourses() {
+const MyCourses = () => {
   const dispatch = useDispatch();
-  const { myCourses, isLoading, isError, message } = useSelector(
-    (state) => state.courses
-  );
+  const { myCourses } = useSelector((state) => state.courses);
 
   useEffect(() => {
     dispatch(fetchMyCourses());
   }, [dispatch]);
 
-  if (isLoading) return <p>Loading your courses...</p>;
-  if (isError) return <p className="text-red-500">{message}</p>;
-
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6">My Enrolled Courses</h1>
-
-      {myCourses.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {myCourses.map((enroll) => (
-            <div
-              key={enroll._id}
-              className="bg-white border rounded-2xl shadow hover:shadow-lg transition p-5"
-            >
-              <h2 className="font-bold text-lg mb-2">
-                {enroll.course?.title || "Untitled Course"}
-              </h2>
-              <p className="text-gray-600">
-                {enroll.course?.description || "No description available"}
-              </p>
-              <p className="mt-3 font-semibold text-blue-600">
-                Price: ${enroll.course?.price ?? 0}
-              </p>
-            </div>
-          ))}
-        </div>
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">My Enrolled Courses</h2>
+      {myCourses.length === 0 ? (
+        <p>No courses enrolled yet.</p>
       ) : (
-        <p>You have not enrolled in any courses yet.</p>
+        <ul className="space-y-4">
+          {myCourses.map((enrollment) => (
+            <li
+              key={enrollment._id}
+              className="p-4 border rounded-lg shadow bg-white"
+            >
+              <h3 className="text-lg font-semibold">
+                {enrollment.course?.title || "Untitled Course"}
+              </h3>
+              <p className="text-gray-600">
+                Price: ${enrollment.course?.price || 0}
+              </p>
+              <p className="text-sm text-gray-500">
+                {enrollment.course?.description || "No description"}
+              </p>
+
+              {/* View Lessons button */}
+              <Link
+                to={`/courses/${enrollment.course?._id}/lessons`}
+                className="mt-2 inline-block bg-blue-600 text-white px-4 py-2 rounded"
+              >
+                View Lessons
+              </Link>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );
-}
+};
+
+export default MyCourses;

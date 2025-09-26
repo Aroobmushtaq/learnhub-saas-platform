@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MyCourses from "./pages/MyCourses";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import LessonPage from "./pages/LessonPage";
 
 function App(){
   return (
@@ -20,6 +21,7 @@ function App(){
         <Route path="/register" element={<Register />} />
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/my-courses" element={<MyCourses />} />
+        <Route path="/courses/:courseId/lessons" element={<LessonPage />} />
       </Routes>
     </Router>
   );
