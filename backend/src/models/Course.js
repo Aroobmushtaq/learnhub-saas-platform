@@ -25,10 +25,10 @@ const courseSchema = new mongoose.Schema(
       enum: ["Web Development", "Design", "Business", "Marketing", "Other"],
       default: "Other",
     },
-    published: {
-      type: Boolean,
-      default: false,
-    },
+    // published: {
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
   { timestamps: true }
 );

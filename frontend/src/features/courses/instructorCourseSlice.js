@@ -53,12 +53,26 @@ export const deleteCourse = createAsyncThunk(
     }
   }
 );
+// ✅ Get Course Detail + Students
+export const getCourseDetailWithStudents = createAsyncThunk(
+  "instructorCourses/getCourseDetailWithStudents",
+  async (id, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user?.token;
+      return await instructorCourseService.getCourseDetailWithStudents(id, token);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data?.message || "Fetch failed");
+    }
+  }
+);
+
 
 const instructorCourseSlice = createSlice({
   name: "instructorCourses",
   initialState: {
     myCourses: [],
     isLoading: false,
+    enrolledStudents: [],
     isSuccess: false,
     isError: false,
     message: "",
@@ -91,6 +105,11 @@ const instructorCourseSlice = createSlice({
       .addCase(deleteCourse.fulfilled, (state, action) => {
         state.myCourses = state.myCourses.filter((c) => c._id !== action.payload);
       })
+      .addCase(getCourseDetailWithStudents.fulfilled, (state, action) => {
+  state.selectedCourse = action.payload.course;
+  state.enrolledStudents = action.payload.students;
+})
+
 
       // ✅ Global pending
       .addMatcher((a) => a.type.startsWith("instructorCourses/") && a.type.endsWith("/pending"), (state) => {

@@ -1,78 +1,184 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import API from "../utils/axiosConfig";
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import API from "../utils/axiosConfig";
 
-export default function RegisterPage() {
-  const [form, setForm] = useState({
+// export default function RegisterPage() {
+//   const [form, setForm] = useState({
+//     name: "",
+//     email: "",
+//     password: "",
+//     role: "student", // default role
+//   });
+//   const navigate = useNavigate();
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const res = await API.post("/auth/register", form);
+
+//       localStorage.setItem("user", JSON.stringify(res.data));
+//       if (res.data.role === "instructor") {
+//         navigate("/instructor/courses");
+//       } else {
+//         navigate("/"); // student homepage
+//       }
+//     } catch (err) {
+//       console.error("Error registering:", err.response?.data || err.message);
+//     }
+//   };
+
+//   return (
+//     <div className="p-6 max-w-md mx-auto">
+//       <h1 className="text-2xl font-bold mb-4">Register</h1>
+
+//       <form onSubmit={handleSubmit} className="space-y-4">
+//         <input
+//           type="text"
+//           placeholder="Name"
+//           value={form.name}
+//           onChange={(e) => setForm({ ...form, name: e.target.value })}
+//           className="w-full border p-2 rounded"
+//           required
+//         />
+
+//         <input
+//           type="email"
+//           placeholder="Email"
+//           value={form.email}
+//           onChange={(e) => setForm({ ...form, email: e.target.value })}
+//           className="w-full border p-2 rounded"
+//           required
+//         />
+
+//         <input
+//           type="password"
+//           placeholder="Password"
+//           value={form.password}
+//           onChange={(e) => setForm({ ...form, password: e.target.value })}
+//           className="w-full border p-2 rounded"
+//           required
+//         />
+
+//         {/* Role Selector */}
+//         <select
+//           value={form.role}
+//           onChange={(e) => setForm({ ...form, role: e.target.value })}
+//           className="w-full border p-2 rounded"
+//         >
+//           <option value="student">Student</option>
+//           <option value="instructor">Instructor</option>
+//         </select>
+
+//         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+//           Register
+//         </button>
+//       </form>
+//     </div>
+//   );
+// }
+// src/pages/Register.js
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { register, resetState } from "../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
+
+function Register() {
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     role: "student", // default role
   });
+
+  const { name, email, password, role } = formData;
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await API.post("/auth/register", form);
+  const { user, isLoading, isError, message } = useSelector(
+    (state) => state.auth
+  );
 
-      localStorage.setItem("user", JSON.stringify(res.data));
-      if (res.data.role === "instructor") {
-        navigate("/instructor/courses");
+  // ✅ Navigate immediately when register success
+  useEffect(() => {
+    if (user) {
+      if (user.role === "instructor") {
+        navigate("/instructor/my-courses");
+      } else if (user.role === "student") {
+        navigate("/my-courses");
       } else {
-        navigate("/"); // student homepage
+        navigate("/");
       }
-    } catch (err) {
-      console.error("Error registering:", err.response?.data || err.message);
     }
+
+    return () => {
+      dispatch(resetState());
+    };
+  }, [user, navigate, dispatch]);
+
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    dispatch(register({ name, email, password, role }));
   };
 
   return (
     <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Register</h1>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <h2 className="text-2xl font-bold mb-4">Register</h2>
+      {isError && <p className="text-red-500">{message}</p>}
+      <form onSubmit={onSubmit} className="space-y-4">
         <input
           type="text"
-          placeholder="Name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          className="w-full border p-2 rounded"
+          name="name"
+          value={name}
+          onChange={onChange}
+          placeholder="Full Name"
+          className="border p-2 w-full"
           required
         />
-
         <input
           type="email"
+          name="email"
+          value={email}
+          onChange={onChange}
           placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          className="w-full border p-2 rounded"
+          className="border p-2 w-full"
           required
         />
-
         <input
           type="password"
+          name="password"
+          value={password}
+          onChange={onChange}
           placeholder="Password"
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          className="w-full border p-2 rounded"
+          className="border p-2 w-full"
           required
         />
 
-        {/* Role Selector */}
+        {/* Role selection */}
         <select
-          value={form.role}
-          onChange={(e) => setForm({ ...form, role: e.target.value })}
-          className="w-full border p-2 rounded"
+          name="role"
+          value={role}
+          onChange={onChange}
+          className="border p-2 w-full"
         >
           <option value="student">Student</option>
           <option value="instructor">Instructor</option>
         </select>
 
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          Register
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+        >
+          {isLoading ? "Registering..." : "Register"}
         </button>
       </form>
     </div>
   );
 }
+
+export default Register;

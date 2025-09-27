@@ -5,6 +5,7 @@ import {
   updateCourse,
   deleteCourse,
 } from "../../features/courses/instructorCourseSlice.js";
+import { Link } from "react-router-dom";
 
 export default function InstructorCourses() {
   const dispatch = useDispatch();
@@ -104,6 +105,12 @@ export default function InstructorCourses() {
                     </p>
                   </div>
                   <div className="space-x-2">
+                    <Link
+                      to={`/instructor/course/${course._id}`}
+                      className="bg-blue-600 text-white px-3 py-1 rounded"
+                    >
+                      View Detail
+                    </Link>
                     <button
                       onClick={() => setEditCourse(course)}
                       className="bg-yellow-500 text-white px-3 py-1 rounded"

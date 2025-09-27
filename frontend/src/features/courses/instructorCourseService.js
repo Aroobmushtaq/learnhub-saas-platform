@@ -10,7 +10,7 @@ const authConfig = (token) => ({
 
 // ✅ Create Course
 const createCourse = async (courseData, token) => {
-  const res = await axios.post(API_URL, courseData, authConfig(token));
+  const res = await axios.post(API_URLL, courseData, authConfig(token));
   return res.data;
 };
 
@@ -31,12 +31,17 @@ const deleteCourse = async (id, token) => {
   const res = await axios.delete(`${API_URLL}/${id}`, authConfig(token));
   return res.data;
 };
-
+const getCourseDetailWithStudents = async (id, token) => {
+  const config = { headers: { Authorization: `Bearer ${token}` } };
+  const res = await axios.get(`http://localhost:5000/api/instructor/course/${id}`, config);
+  return res.data;
+};
 const instructorCourseService = {
   createCourse,
   getMyCourses,
   updateCourse,
   deleteCourse,
+  getCourseDetailWithStudents
 };
 
 export default instructorCourseService;

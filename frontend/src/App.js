@@ -10,6 +10,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import LessonPage from "./pages/LessonPage";
 import AddCourse from "./pages/instructor/AddCourse";
 import InstructorCourses from "./pages/instructor/InstructorCourses.js";
+import InstructorCourseDetail from "./pages/instructor/InstructorCourseDetail.js";
 function App() {
   return (
     <Router>
@@ -25,6 +26,7 @@ function App() {
         <Route path="/courses/:courseId/lessons" element={<LessonPage />} />
         <Route path="/instructor/add-course" element={<AddCourse />} />
         <Route path="/instructor/my-courses" element={<InstructorCourses />} />
+        <Route path="/instructor/course/:id" element={<InstructorCourseDetail />} />
       </Routes>
     </Router>
   );
