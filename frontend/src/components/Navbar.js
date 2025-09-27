@@ -56,7 +56,7 @@ export default function Navbar() {
             <Link to="/instructor/add-course" className="hover:underline">
               Add Course
             </Link>
-            <Link to="/instructor/courses" className="hover:underline">
+            <Link to="/instructor/my-courses" className="hover:underline">
               My Courses
             </Link>
             <Link to="/profile" className="hover:underline">

@@ -8,8 +8,9 @@ import Register from "./pages/Register";
 import MyCourses from "./pages/MyCourses";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import LessonPage from "./pages/LessonPage";
-
-function App(){
+import AddCourse from "./pages/instructor/AddCourse";
+import InstructorCourses from "./pages/instructor/InstructorCourses.js";
+function App() {
   return (
     <Router>
       <Navbar />
@@ -22,6 +23,8 @@ function App(){
         <Route path="/payment/success" element={<PaymentSuccess />} />
         <Route path="/my-courses" element={<MyCourses />} />
         <Route path="/courses/:courseId/lessons" element={<LessonPage />} />
+        <Route path="/instructor/add-course" element={<AddCourse />} />
+        <Route path="/instructor/my-courses" element={<InstructorCourses />} />
       </Routes>
     </Router>
   );

@@ -4,7 +4,7 @@ import courseReducer from '../features/courses/courseSlice';
 import adminReducer from '../features/admin/adminSlice';
 import instructorReducer from '../features/instructor/instructorSlice';
 import enrolledReducer from '../features/courses/enrolledSlice';
-
+import instructorCourseReducer from '../features/courses/instructorCourseSlice'
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -12,6 +12,7 @@ export const store = configureStore({
     admin: adminReducer,
     instructor: instructorReducer,
     enrolled: enrolledReducer,
+    instructorCourses: instructorCourseReducer
   },
 });
 
