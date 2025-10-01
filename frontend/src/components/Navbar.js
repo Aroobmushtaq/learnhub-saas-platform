@@ -26,6 +26,9 @@ export default function Navbar() {
         {!user ? (
           // Guest Links
           <>
+          <Link to="/courses" className="hover:underline">
+              Courses
+            </Link>
             <Link to="/login" className="hover:underline">
               Login
             </Link>
@@ -36,6 +39,9 @@ export default function Navbar() {
         ) : user.role === "student" ? (
           // Student Links
           <>
+          <Link to="/" className="hover:underline">
+              Home
+            </Link>
             <Link to="/courses" className="hover:underline">
               Courses
             </Link>

@@ -1,4 +1,5 @@
 import express from "express";
+import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
@@ -25,7 +26,7 @@ app.post(
 // Then parse normal JSON for all other routes
 app.use(express.json());
 app.use(cors());
-
+app.use("/uploads", express.static("uploads"));
 app.use("/api/auth", router);
 app.use("/api/courses", courseRouter);
 app.use("/api/enrollments", enrollmentRoutes);

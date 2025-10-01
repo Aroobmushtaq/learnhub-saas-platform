@@ -13,6 +13,7 @@ import InstructorCourses from "./pages/instructor/InstructorCourses.js";
 import InstructorLessonPage from "./pages/instructor/InstructorLessonPage.js"
 import InstructorCourseDetail from "./pages/instructor/InstructorCourseDetail.js";
 import AdminDashboard from "./pages/admin/AdminDashboard.js";
+import { Footer } from "./components/Footer.js";
 function App() {
   return (
     <Router>
@@ -32,6 +33,7 @@ function App() {
         <Route path="/instructor/course/:id" element={<InstructorCourseDetail />} />
       <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
+      <Footer/>
     </Router>
   );
 }
