@@ -26,6 +26,9 @@ export default function Navbar() {
         {!user ? (
           // Guest Links
           <>
+           <Link to="/" className="hover:underline">
+              Home
+            </Link>
           <Link to="/courses" className="hover:underline">
               Courses
             </Link>
