@@ -76,9 +76,21 @@ const Courses = () => {
                   className="p-4 border rounded-xl shadow hover:shadow-lg transition bg-white"
                 >
                   {/* Course Image */}
-                  {course.image && (
+                  {/* {course.image && (
                     <img
                       src={`http://localhost:5000/${course.image}`}
+                      alt={course.title}
+                      className="w-full h-40 object-cover rounded mb-3"
+                    />
+                  )} */}
+                  {/* Course Image */}
+                  {course.image && (
+                    <img
+                      src={
+                        course.image.startsWith("http")
+                          ? course.image // if image is a full URL (like placeholder)
+                          : `http://localhost:5000/${course.image.replace(/\\/g, "/")}` // if image is local
+                      }
                       alt={course.title}
                       className="w-full h-40 object-cover rounded mb-3"
                     />
