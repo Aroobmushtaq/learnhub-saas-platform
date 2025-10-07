@@ -17,10 +17,8 @@ export default function Navbar() {
   return (
     <nav className="bg-blue-600 text-white px-6 py-3 flex justify-between items-center">
       {/* Logo */}
-      <Link to="/" className="text-xl font-bold">
-        LearnHub
-      </Link>
-
+     <p className="text-xl font-bold"> LearnHub</p>
+ 
       {/* Links */}
       <div className="flex space-x-4">
         {!user ? (
@@ -58,6 +56,9 @@ export default function Navbar() {
         ) : user.role === "instructor" ? (
           // Instructor Links
           <>
+          <Link to="/" className="hover:underline">
+              Home
+            </Link>
             <Link to="/instructor/add-course" className="hover:underline">
               Add Course
             </Link>
@@ -72,6 +73,9 @@ export default function Navbar() {
         ) : user.role === "admin" ? (
           // Admin Links
           <>
+          <Link to="/" className="hover:underline">
+              Home
+            </Link>
             <Link to="/admin/dashboard" className="hover:underline">
               Admin Dashboard
             </Link>

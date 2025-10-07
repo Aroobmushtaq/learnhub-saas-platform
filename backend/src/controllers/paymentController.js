@@ -47,8 +47,6 @@ export const createCheckoutSession = async (req, res) => {
       },
       success_url: `${YOUR_DOMAIN}/payment/success`,
       cancel_url: `${YOUR_DOMAIN}/courses/${courseId}`,
-      // success_url: "http://localhost:5000/success?session_id={CHECKOUT_SESSION_ID}",
-      // cancel_url: "http://localhost:5000/cancel",
     });
 
     // create a pending Payment record (optional)
@@ -117,7 +115,7 @@ export const stripeWebhook = async (req, res) => {
   // Return a response to acknowledge receipt of the event
   res.json({ received: true });
 };
-// ✅ Verify payment session
+//  Verify payment session
 export const verifyPayment = async (req, res) => {
   try {
     const sessionId = req.params.sessionId;

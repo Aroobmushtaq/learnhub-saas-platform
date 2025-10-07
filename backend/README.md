@@ -149,3 +149,8 @@ Get All Users → ```bash GET /api/admin/users ```
 Delete User → ```bash DELETE /api/admin/users/:id```
 
 Manage Courses → ```bash Can update/delete/publish any course```
+
+
+
+
+C:\stripe-cli\stripe.exe listen --forward-to "http://localhost:5000/api/payments/webhook"

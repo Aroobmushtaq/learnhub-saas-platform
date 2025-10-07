@@ -76,14 +76,6 @@ const Courses = () => {
                   className="p-4 border rounded-xl shadow hover:shadow-lg transition bg-white"
                 >
                   {/* Course Image */}
-                  {/* {course.image && (
-                    <img
-                      src={`http://localhost:5000/${course.image}`}
-                      alt={course.title}
-                      className="w-full h-40 object-cover rounded mb-3"
-                    />
-                  )} */}
-                  {/* Course Image */}
                   {course.image && (
                     <img
                       src={

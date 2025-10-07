@@ -1,16 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import { Star,BookOpen, Award, ArrowLeft } from "lucide-react";
+import { Star, BookOpen, Award, ArrowLeft } from "lucide-react";
 import { Button } from "../components/ui/button";
+import { fetchCourses } from "../features/courses/courseSlice";
 
 export default function CourseDetails() {
   const { id } = useParams();
+  const dispatch = useDispatch();
   const { courses } = useSelector((state) => state.courses);
   const { user } = useSelector((state) => state.auth);
 
-  const course = courses.find((c) => c._id === id);
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // If course exists in Redux, use it — otherwise fetch from API
+  useEffect(() => {
+    const found = courses.find((c) => c._id === id);
+    if (found) {
+      setCourse(found);
+      setLoading(false);
+    } else {
+      // fetch directly from backend
+      const fetchCourse = async () => {
+        try {
+          const res = await axios.get(`http://localhost:5000/api/courses/${id}`);
+          setCourse(res.data);
+        } catch (err) {
+          console.error("Error fetching course:", err);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchCourse();
+    }
+  }, [id, courses]);
+
+  // Also make sure all courses are fetched to populate Redux for later use
+  useEffect(() => {
+    if (courses.length === 0) {
+      dispatch(fetchCourses());
+    }
+  }, [dispatch, courses.length]);
 
   const handleCheckout = async () => {
     try {
@@ -36,8 +68,8 @@ export default function CourseDetails() {
     }
   };
 
-  if (!course) return <p className="text-red-500">Course not found</p>;
-
+  if (loading) return <p className="text-gray-500 text-center">Loading course...</p>;
+  if (!course) return <p className="text-red-500 text-center">Course not found</p>;
 
   return (
     <div className="min-h-screen bg-background">
@@ -57,9 +89,7 @@ export default function CourseDetails() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl font-bold">{course.title}</h1>
-              <p className="text-xl text-muted-foreground">
-                {course.description}
-              </p>
+              <p className="text-xl text-muted-foreground">{course.description}</p>
 
               <div className="flex flex-wrap gap-6 text-sm">
                 <div className="flex items-center space-x-2">
@@ -77,24 +107,34 @@ export default function CourseDetails() {
 
               <div className="pt-4">
                 <div className="flex items-baseline gap-4 mb-4">
-                  <span className="text-4xl font-bold text-primary">
-                    ${course.price}
-                  </span>
+                  <span className="text-4xl font-bold text-primary">${course.price}</span>
                   <span className="text-muted-foreground">one-time payment</span>
                 </div>
-                <Button
-                  onClick={handleCheckout}
-                  className="btn-hero w-full md:w-auto"
-                >
-                  Enroll Now
-                </Button>
+
+                {user?.role?.toLowerCase() === "student" ? (
+                  <Button onClick={handleCheckout} className="btn-hero w-full md:w-auto">
+                    Enroll Now
+                  </Button>
+                ) : user?.role?.toLowerCase() === "admin" ? (
+                  <p className="text-gray-500 italic text-sm">Admins cannot enroll in courses.</p>
+                ) : user?.role?.toLowerCase() === "instructor" ? (
+                  <p className="text-gray-500 italic text-sm">Instructors cannot enroll in courses.</p>
+                ) : (
+                  <Link to="/login">
+                    <Button className="btn-hero w-full md:w-auto">Login to Enroll</Button>
+                  </Link>
+                )}
               </div>
             </div>
 
             <div className="rounded-2xl overflow-hidden shadow-2xl">
               {course.image && (
                 <img
-                  src={`http://localhost:5000/${course.image}`}
+                  src={
+                    course.image.startsWith("http")
+                      ? course.image
+                      : `http://localhost:5000/${course.image.replace(/\\/g, "/")}`
+                  }
                   alt={course.title}
                   className="w-full h-auto"
                 />
@@ -108,9 +148,7 @@ export default function CourseDetails() {
       <section className="section-padding">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-12">
-            {/* Main Content */}
             <div className="md:col-span-2 space-y-12">
-              {/* What You'll Learn */}
               {course.whatYouWillLearn && (
                 <div className="card-elevated">
                   <h2 className="text-2xl font-bold mb-6">What You'll Learn</h2>
@@ -125,7 +163,6 @@ export default function CourseDetails() {
                 </div>
               )}
 
-              {/* Lessons */}
               {course.lessons && (
                 <div className="card-elevated">
                   <h2 className="text-2xl font-bold mb-6">Course Content</h2>
@@ -152,7 +189,6 @@ export default function CourseDetails() {
                 </div>
               )}
 
-              {/* Requirements */}
               {course.requirements && (
                 <div className="card-elevated">
                   <h2 className="text-2xl font-bold mb-6">Requirements</h2>

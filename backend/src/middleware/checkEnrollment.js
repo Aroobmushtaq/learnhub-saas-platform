@@ -15,7 +15,7 @@ export const checkEnrollment = async (req, res, next) => {
       return res.status(403).json({ message: "You are not enrolled in this course." });
     }
 
-    next(); // ✅ student is enrolled → continue
+    next(); //  student is enrolled → continue
   } catch (error) {
     res.status(500).json({ message: "Error checking enrollment" });
   }
