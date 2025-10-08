@@ -2,7 +2,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// ✅ Fetch all courses
+//  Fetch all courses
 export const fetchCourses = createAsyncThunk("courses/fetchCourses", async (query = "", thunkAPI) => {
   try {
     const res = await axios.get(`http://localhost:5000/api/courses${query}`);
@@ -12,10 +12,10 @@ export const fetchCourses = createAsyncThunk("courses/fetchCourses", async (quer
   }
 });
 
-// ✅ Enroll course
+//  Enroll course
 export const enrollCourse = createAsyncThunk("courses/enrollCourse", async (courseId, thunkAPI) => {
   try {
-    const token = thunkAPI.getState().auth.user?.token; // ✅ get token from Redux
+    const token = thunkAPI.getState().auth.user?.token; //  get token from Redux
     if (!token) throw new Error("No token found");
 
     const res = await axios.post(
@@ -84,7 +84,7 @@ const courseSlice = createSlice({
     });
 },
 });
-// ✅ Fetch logged-in user's enrolled courses
+//  Fetch logged-in user's enrolled courses
 export const fetchMyCourses = createAsyncThunk(
   "courses/fetchMyCourses",
   async (_, thunkAPI) => {

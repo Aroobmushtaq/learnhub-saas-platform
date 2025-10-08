@@ -10,7 +10,7 @@ const authConfig = () => {
   return { headers: { Authorization: `Bearer ${token}` } };
 };
 
-// ✅ Get all users
+//  Get all users
 export const getUsers = createAsyncThunk("admin/getUsers", async (_, thunkAPI) => {
   try {
     const res = await axios.get(`${API_URL}/users`, authConfig());
@@ -20,7 +20,7 @@ export const getUsers = createAsyncThunk("admin/getUsers", async (_, thunkAPI) =
   }
 });
 
-// ✅ Delete user
+//  Delete user
 export const deleteUser = createAsyncThunk("admin/deleteUser", async (userId, thunkAPI) => {
   try {
     await axios.delete(`${API_URL}/users/${userId}`, authConfig());
@@ -30,7 +30,7 @@ export const deleteUser = createAsyncThunk("admin/deleteUser", async (userId, th
   }
 });
 
-// ✅ Get all courses
+//  Get all courses
 export const getCourses = createAsyncThunk("admin/getCourses", async (_, thunkAPI) => {
   try {
     const res = await axios.get(`${API_URL}/courses`, authConfig());
@@ -40,7 +40,7 @@ export const getCourses = createAsyncThunk("admin/getCourses", async (_, thunkAP
   }
 });
 
-// ✅ Delete course
+//  Delete course
 export const deleteCourse = createAsyncThunk("admin/deleteCourse", async (courseId, thunkAPI) => {
   try {
     await axios.delete(`${API_URL}/courses/${courseId}`, authConfig());

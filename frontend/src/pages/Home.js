@@ -4,7 +4,7 @@ import { fetchCourses } from "../features/courses/courseSlice";
 import { ArrowRight, BookOpen, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/button";
-import CourseCard from "../components/CourseCard"; // ✅ import fixed
+import CourseCard from "../components/CourseCard"; //  import fixed
 import heroImage from "../assets/hero-learning.jpg";
 
 export default function Home() {

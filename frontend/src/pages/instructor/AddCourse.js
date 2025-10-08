@@ -1,82 +1,4 @@
-// import React, { useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { createCourse } from "../../features/courses/instructorCourseSlice";
-
-// export default function AddCourse() {
-//   const dispatch = useDispatch();
-//   const { isLoading, isError, message } = useSelector((s) => s.instructorCourses);
-
-//   const [formData, setFormData] = useState({
-//     title: "",
-//     description: "",
-//     price: "",
-//     category: "",
-//   });
-
-//   const handleChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
-
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     dispatch(createCourse(formData));
-//     setFormData({ title: "", description: "", price: "", category: "" });
-//   };
-
-//   return (
-//     <div className="max-w-lg mx-auto mt-6 p-4 bg-white shadow rounded">
-//       <h2 className="text-2xl font-bold mb-4">Add New Course</h2>
-
-//       {isError && <p className="text-red-600">{message}</p>}
-
-//       <form onSubmit={handleSubmit} className="space-y-4">
-//         <input
-//           type="text"
-//           name="title"
-//           placeholder="Course Title"
-//           value={formData.title}
-//           onChange={handleChange}
-//           className="w-full border px-3 py-2 rounded"
-//           required
-//         />
-//         <textarea
-//           name="description"
-//           placeholder="Course Description"
-//           value={formData.description}
-//           onChange={handleChange}
-//           className="w-full border px-3 py-2 rounded"
-//           required
-//         />
-//         <input
-//           type="number"
-//           name="price"
-//           placeholder="Price"
-//           value={formData.price}
-//           onChange={handleChange}
-//           className="w-full border px-3 py-2 rounded"
-//           required
-//         />
-//         <input
-//           type="text"
-//           name="category"
-//           placeholder="Category"
-//           value={formData.category}
-//           onChange={handleChange}
-//           className="w-full border px-3 py-2 rounded"
-//           required
-//         />
-//         <button
-//           type="submit"
-//           disabled={isLoading}
-//           className="bg-blue-600 text-white px-4 py-2 rounded"
-//         >
-//           {isLoading ? "Saving..." : "Add Course"}
-//         </button>
-//       </form>
-//     </div>
-//   );
-// }
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createCourse } from "../../features/courses/instructorCourseSlice";
 
@@ -86,12 +8,14 @@ export default function AddCourse() {
     (s) => s.instructorCourses
   );
 
+  const fileInputRef = useRef(null); // 👈 reference for file input
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     price: "",
     category: "",
-    image: null, // for image
+    image: null,
   });
 
   const handleChange = (e) => {
@@ -105,7 +29,6 @@ export default function AddCourse() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // prepare form data for file upload
     const data = new FormData();
     data.append("title", formData.title);
     data.append("description", formData.description);
@@ -115,8 +38,21 @@ export default function AddCourse() {
       data.append("image", formData.image);
     }
 
-    dispatch(createCourse(data)); // your slice should handle FormData
-    setFormData({ title: "", description: "", price: "", category: "", image: null });
+    dispatch(createCourse(data));
+
+    // reset form state
+    setFormData({
+      title: "",
+      description: "",
+      price: "",
+      category: "",
+      image: null,
+    });
+
+    // reset file input visually
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
   };
 
   return (
@@ -124,7 +60,9 @@ export default function AddCourse() {
       <div className="w-full max-w-2xl bg-white shadow-lg rounded-2xl p-8">
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-3xl font-extrabold text-blue-700">Add a New Course</h2>
+          <h2 className="text-3xl font-extrabold text-blue-700">
+            Add a New Course
+          </h2>
           <p className="text-gray-500 mt-1">
             Fill in the details to publish your course
           </p>
@@ -138,10 +76,16 @@ export default function AddCourse() {
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5" encType="multipart/form-data">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+          encType="multipart/form-data"
+        >
           {/* Title */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Course Title</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Course Title
+            </label>
             <input
               type="text"
               name="title"
@@ -155,7 +99,9 @@ export default function AddCourse() {
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Description
+            </label>
             <textarea
               name="description"
               value={formData.description}
@@ -170,7 +116,9 @@ export default function AddCourse() {
           {/* Price & Category */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700">Price ($)</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Price ($)
+              </label>
               <input
                 type="number"
                 name="price"
@@ -183,7 +131,9 @@ export default function AddCourse() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Category</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Category
+              </label>
               <input
                 type="text"
                 name="category"
@@ -198,8 +148,11 @@ export default function AddCourse() {
 
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">Course Image</label>
+            <label className="block text-sm font-medium text-gray-700">
+              Course Image
+            </label>
             <input
+              ref={fileInputRef} // 👈 attached ref here
               type="file"
               name="image"
               accept="image/*"
