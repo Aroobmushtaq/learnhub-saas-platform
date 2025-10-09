@@ -152,5 +152,11 @@ Manage Courses → ```bash Can update/delete/publish any course```
 
 
 
-
+### For Start
+```bash
+cd backend 
 C:\stripe-cli\stripe.exe listen --forward-to "http://localhost:5000/api/payments/webhook"
+
+cd backend
+npx nodemon index.js
+```
