@@ -43,7 +43,7 @@ app.get("/cancel", (req, res) => {
   res.send("Payment cancelled! (Backend test)");
 });
 app.use("/api/admin", adminRoutes);
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+// const PORT = process.env.PORT || 5000;
+app.listen(5000, () => {
   console.log(`server is running on port ${PORT}`);
 });
