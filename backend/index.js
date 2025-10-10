@@ -66,33 +66,39 @@ const app = express();
 
 // ✅ Allowed frontend URLs
 const allowedOrigins = [
-  "https://frontend-klqmm2gqr-aroob-mushtaqs-projects.vercel.app",
-  "http://localhost:3000",
+  "https://frontend-aroobmushtaqs-projects.vercel.app", // ✅ your frontend deployed link (update this)
+  "http://localhost:3000", // ✅ local testing
 ];
 
-// ✅ Global CORS
+// ✅ Global CORS setup
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     credentials: true,
   })
 );
 
-// ✅ Stripe webhook (raw body)
+// ✅ Stripe webhook route (must come before JSON middleware)
 app.post(
   "/api/payments/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
 
-// ✅ JSON parser
+// ✅ JSON parser for all other routes
 app.use(express.json());
 
-// ✅ Static uploads
+// ✅ Static file serving
 app.use("/uploads", express.static("uploads"));
 
-// ✅ Routes
+// ✅ Main API routes
 app.use("/api/auth", router);
 app.use("/api/courses", courseRouter);
 app.use("/api/enrollments", enrollmentRoutes);
@@ -101,12 +107,12 @@ app.use("/api/lessons", lessonRoutes);
 app.use("/api/instructor", instructorRoutes);
 app.use("/api/admin", adminRoutes);
 
-// ✅ Test routes
+// ✅ Test route
 app.get("/", (req, res) => {
-  res.send("✅ Backend running successfully!");
+  res.send("✅ Backend is running successfully!");
 });
 
-// ✅ Safe fallback route
+// ✅ Handle unknown routes
 app.all("*", (req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
