@@ -11,9 +11,8 @@ import { stripeWebhook } from "./src/controllers/paymentController.js";
 import lessonRoutes from "./src/routes/lessonRoutes.js";
 import instructorRoutes from "./src/routes/instructorRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
-connectDB();
 dotenv.config();
-
+connectDB();
 const app = express();
 
 // Stripe webhook must use raw body, so add this BEFORE express.json()
@@ -43,7 +42,7 @@ app.get("/cancel", (req, res) => {
   res.send("Payment cancelled! (Backend test)");
 });
 app.use("/api/admin", adminRoutes);
-// const PORT = process.env.PORT || 5000;
-app.listen(5000, () => {
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
