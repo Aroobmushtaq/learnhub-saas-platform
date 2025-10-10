@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { BASE_URL } from "../config";
 
 export default function PaymentSuccess() {
   const [searchParams] = useSearchParams();
@@ -13,7 +14,7 @@ export default function PaymentSuccess() {
 
       try {
         const res = await fetch(
-          `http://localhost:5000/api/payments/verify/${sessionId}`,
+          `${BASE_URL}/api/payments/verify/${sessionId}`,
           { credentials: "include" }
         );
         const data = await res.json();

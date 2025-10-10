@@ -5,6 +5,7 @@ import axios from "axios";
 import { Star, BookOpen, Award, ArrowLeft } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { fetchCourses } from "../features/courses/courseSlice";
+import { BASE_URL } from "../config";
 
 export default function CourseDetails() {
   const { id } = useParams();
@@ -25,7 +26,7 @@ export default function CourseDetails() {
       // fetch directly from backend
       const fetchCourse = async () => {
         try {
-          const res = await axios.get(`http://localhost:5000/api/courses/${id}`);
+          const res = await axios.get(`${BASE_URL}/api/courses/${id}`);
           setCourse(res.data);
         } catch (err) {
           console.error("Error fetching course:", err);
@@ -52,7 +53,7 @@ export default function CourseDetails() {
       }
 
       const res = await axios.post(
-        `http://localhost:5000/api/payments/create-checkout-session/${course._id}`,
+        `${BASE_URL}/api/payments/create-checkout-session/${course._id}`,
         {},
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -133,7 +134,7 @@ export default function CourseDetails() {
                   src={
                     course.image.startsWith("http")
                       ? course.image
-                      : `http://localhost:5000/${course.image.replace(/\\/g, "/")}`
+                      : `${BASE_URL}/${course.image.replace(/\\/g, "/")}`
                   }
                   alt={course.title}
                   className="w-full h-auto"

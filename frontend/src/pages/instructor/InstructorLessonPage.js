@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { BASE_URL } from "../../config";
 
 export default function LessonsPage() {
   const { courseId } = useParams();
@@ -14,7 +15,7 @@ export default function LessonsPage() {
     if (!courseId || !user?.token) return;
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/lessons/${courseId}`,
+        `${BASE_URL}/api/lessons/${courseId}`,
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
       setLessons(res.data.map((l) => ({ ...l, isEditing: false })));
@@ -31,7 +32,7 @@ export default function LessonsPage() {
     if (!newLesson.title || !newLesson.content) return;
     try {
       const res = await axios.post(
-        `http://localhost:5000/api/lessons/${courseId}`,
+        `${BASE_URL}/api/lessons/${courseId}`,
         newLesson,
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -45,7 +46,7 @@ export default function LessonsPage() {
   const updateLesson = async (lessonId, updatedData) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/lessons/${lessonId}`,
+        `${BASE_URL}/api/lessons/${lessonId}`,
         updatedData,
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
@@ -59,7 +60,7 @@ export default function LessonsPage() {
 
   const deleteLesson = async (lessonId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/lessons/${lessonId}`, {
+      await axios.delete(`${BASE_URL}/api/lessons/${lessonId}`, {
         headers: { Authorization: `Bearer ${user.token}` },
       });
       setLessons((prev) => prev.filter((l) => l._id !== lessonId));

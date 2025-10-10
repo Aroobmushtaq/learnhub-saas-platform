@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { BASE_URL } from "../../config";
 
 export default function AdminDashboard() {
   const { user } = useSelector((state) => state.auth);
@@ -11,7 +12,7 @@ export default function AdminDashboard() {
   // Fetch Users
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/users", {
+      const res = await axios.get(`${BASE_URL}/api/admin/users`, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
       setUsers(res.data);
@@ -24,7 +25,7 @@ export default function AdminDashboard() {
   // Fetch Courses
   const fetchCourses = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/admin/courses", {
+      const res = await axios.get(`${BASE_URL}/api/admin/courses`, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
       setCourses(res.data);
@@ -37,7 +38,7 @@ export default function AdminDashboard() {
   // Delete user
   const deleteUser = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/admin/users/${id}`, {
+      await axios.delete(`${BASE_URL}/api/admin/users/${id}`, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
       setUsers(users.filter((u) => u._id !== id));
@@ -49,7 +50,7 @@ export default function AdminDashboard() {
   // Delete course
   const deleteCourse = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/admin/courses/${id}`, {
+      await axios.delete(`${BASE_URL}/api/admin/courses/${id}`, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
       setCourses(courses.filter((c) => c._id !== id));

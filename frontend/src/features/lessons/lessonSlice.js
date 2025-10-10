@@ -1,6 +1,7 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { BASE_URL } from "../../config";
 
 const initialState = {
   lessons: [],
@@ -15,7 +16,7 @@ export const getLessons = createAsyncThunk(
   async (courseId, thunkAPI) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(`http://localhost:5000/api/lessons/${courseId}`, {
+      const res = await axios.get(`${BASE_URL}/api/lessons/${courseId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return res.data;
@@ -31,7 +32,7 @@ export const addLesson = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const res = await axios.post(
-        `http://localhost:5000/api/lessons/${courseId}`,
+        `${BASE_URL}/api/lessons/${courseId}`,
         lessonData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -48,7 +49,7 @@ export const updateLesson = createAsyncThunk(
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        `http://localhost:5000/api/lessons/${lessonId}`,
+        `${BASE_URL}/api/lessons/${lessonId}`,
         updatedData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -64,7 +65,7 @@ export const deleteLesson = createAsyncThunk(
   async (lessonId, thunkAPI) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/api/lessons/${lessonId}`, {
+      await axios.delete(`${BASE_URL}/api/lessons/${lessonId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return lessonId;

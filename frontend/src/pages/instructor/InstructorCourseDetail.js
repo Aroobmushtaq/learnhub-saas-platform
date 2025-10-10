@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { getCourseEnrollments } from "../../features/enrolment/enrollmentService";
-
+import { BASE_URL } from "../../config";
 export default function InstructorCourseDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ export default function InstructorCourseDetail() {
 
     const fetchDetails = async () => {
       try {
-        const res = await fetch(`http://localhost:5000/api/instructor/course/${id}`, {
+        const res = await fetch(`${BASE_URL}/api/instructor/course/${id}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${user.token}`,

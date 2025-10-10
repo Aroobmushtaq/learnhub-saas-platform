@@ -1,8 +1,8 @@
 // src/features/admin/adminSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
-const API_URL = "http://localhost:5000/api/admin";
+import { BASE_URL } from "../../config";
+const API_URL = `${BASE_URL}/api/admin`;
 
 // Helper to attach token
 const authConfig = () => {

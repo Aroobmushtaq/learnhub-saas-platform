@@ -1,11 +1,11 @@
 // src/features/courses/courseSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
+import { BASE_URL } from "../../config";
 //  Fetch all courses
 export const fetchCourses = createAsyncThunk("courses/fetchCourses", async (query = "", thunkAPI) => {
   try {
-    const res = await axios.get(`http://localhost:5000/api/courses${query}`);
+    const res = await axios.get(`${BASE_URL}/api/courses${query}`);
     return res.data;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data?.message || "Failed to fetch courses");
@@ -19,7 +19,7 @@ export const enrollCourse = createAsyncThunk("courses/enrollCourse", async (cour
     if (!token) throw new Error("No token found");
 
     const res = await axios.post(
-      `http://localhost:5000/api/enrollments/${courseId}`,
+      `${BASE_URL}/api/enrollments/${courseId}`,
       {},
       { headers: { Authorization: `Bearer ${token}` } }
     );
@@ -90,7 +90,7 @@ export const fetchMyCourses = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user?.token;
-      const res = await axios.get("http://localhost:5000/api/enrollments/my", {
+      const res = await axios.get("${BASE_URL}/api/enrollments/my", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

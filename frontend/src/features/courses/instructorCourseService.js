@@ -1,7 +1,7 @@
 import axios from "axios";
-
-const API_URL = "http://localhost:5000/api";
-const API_URLL = "http://localhost:5000/api/courses";
+import { BASE_URL } from "../../config";
+const API_URL = `${BASE_URL}/api`;
+const API_URLL = `${BASE_URL}/api/courses`;
 
 // Helper to add token
 const authConfig = (token) => ({
@@ -33,7 +33,7 @@ const deleteCourse = async (id, token) => {
 };
 const getCourseDetailWithStudents = async (id, token) => {
   const config = { headers: { Authorization: `Bearer ${token}` } };
-  const res = await axios.get(`http://localhost:5000/api/instructor/course/${id}`, config);
+  const res = await axios.get(`${BASE_URL}/api/instructor/course/${id}`, config);
   return res.data;
 };
 const instructorCourseService = {

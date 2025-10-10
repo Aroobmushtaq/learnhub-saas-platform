@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCourses } from "../features/courses/courseSlice";
 import { Link } from "react-router-dom";
 import { Search } from "lucide-react";
-
+import { BASE_URL } from "../config";
 const Courses = () => {
   const dispatch = useDispatch();
   const { courses, isLoading, isError, message } = useSelector(
@@ -81,7 +81,7 @@ const Courses = () => {
                       src={
                         course.image.startsWith("http")
                           ? course.image // if image is a full URL (like placeholder)
-                          : `http://localhost:5000/${course.image.replace(/\\/g, "/")}` // if image is local
+                          : `${BASE_URL}/${course.image.replace(/\\/g, "/")}` // if image is local
                       }
                       alt={course.title}
                       className="w-full h-40 object-cover rounded mb-3"

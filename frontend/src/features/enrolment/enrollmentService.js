@@ -1,6 +1,7 @@
 import axios from "axios";
+import { BASE_URL } from "../../config";
 
-const API_URL = "http://localhost:5000/api/enrollments";
+const API_URL = `${BASE_URL}/api/enrollments`;
 
 //  Add token helper
 const authConfig = (token) => ({
