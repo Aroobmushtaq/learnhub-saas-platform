@@ -47,7 +47,6 @@
 //   console.log(`server is running on port ${PORT}`);
 // });
 import express from "express";
-import path from "path";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
@@ -65,13 +64,13 @@ connectDB();
 
 const app = express();
 
-// ✅ Allow these frontend origins
+// ✅ Allowed frontend URLs
 const allowedOrigins = [
-  "https://frontend-klqmm2gqr-aroob-mushtaqs-projects.vercel.app", // your deployed frontend
+  "https://frontend-klqmm2gqr-aroob-mushtaqs-projects.vercel.app",
   "http://localhost:3000",
 ];
 
-// ✅ Apply CORS before everything (even before webhook)
+// ✅ Global CORS
 app.use(
   cors({
     origin: allowedOrigins,
@@ -80,17 +79,14 @@ app.use(
   })
 );
 
-// ✅ Handle preflight requests (important for OPTIONS)
-app.options("*", cors());
-
-// ✅ Stripe webhook — must come AFTER global CORS
+// ✅ Stripe webhook (raw body)
 app.post(
   "/api/payments/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
 
-// ✅ Normal JSON parsing
+// ✅ JSON parser
 app.use(express.json());
 
 // ✅ Static uploads
@@ -105,17 +101,14 @@ app.use("/api/lessons", lessonRoutes);
 app.use("/api/instructor", instructorRoutes);
 app.use("/api/admin", adminRoutes);
 
-// ✅ Test endpoints
+// ✅ Test routes
 app.get("/", (req, res) => {
   res.send("✅ Backend running successfully!");
 });
 
-app.get("/success", (req, res) => {
-  res.send("Payment successful! (Backend test)");
-});
-
-app.get("/cancel", (req, res) => {
-  res.send("Payment cancelled! (Backend test)");
+// ✅ Safe fallback route
+app.all("*", (req, res) => {
+  res.status(404).json({ message: "Route not found" });
 });
 
 // ✅ Start server
