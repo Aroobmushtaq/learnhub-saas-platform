@@ -65,40 +65,38 @@ connectDB();
 
 const app = express();
 
-// ✅ Allowed frontend origins
+// ✅ Allow these frontend origins
 const allowedOrigins = [
   "https://frontend-klqmm2gqr-aroob-mushtaqs-projects.vercel.app", // your deployed frontend
-  "http://localhost:3000", // local development
+  "http://localhost:3000",
 ];
 
-// ✅ Stripe webhook (must come before express.json)
+// ✅ Apply CORS before everything (even before webhook)
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    credentials: true,
+  })
+);
+
+// ✅ Handle preflight requests (important for OPTIONS)
+app.options("*", cors());
+
+// ✅ Stripe webhook — must come AFTER global CORS
 app.post(
   "/api/payments/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
 
-// ✅ Apply CORS properly
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
-
-// ✅ Normal JSON parsing after webhook route
+// ✅ Normal JSON parsing
 app.use(express.json());
 
-// ✅ Static files
+// ✅ Static uploads
 app.use("/uploads", express.static("uploads"));
 
-// ✅ API routes
+// ✅ Routes
 app.use("/api/auth", router);
 app.use("/api/courses", courseRouter);
 app.use("/api/enrollments", enrollmentRoutes);
@@ -107,19 +105,19 @@ app.use("/api/lessons", lessonRoutes);
 app.use("/api/instructor", instructorRoutes);
 app.use("/api/admin", adminRoutes);
 
-// ✅ Test routes
+// ✅ Test endpoints
 app.get("/", (req, res) => {
-  res.send("Server is running ✅");
+  res.send("✅ Backend running successfully!");
 });
+
 app.get("/success", (req, res) => {
   res.send("Payment successful! (Backend test)");
 });
+
 app.get("/cancel", (req, res) => {
   res.send("Payment cancelled! (Backend test)");
 });
 
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`✅ Server is running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
