@@ -139,33 +139,27 @@ connectDB();
 
 const app = express();
 
-// ✅ Global CORS setup (allow all origins)
-// app.use(
-//   cors({
-//     origin: "*", // allow requests from any frontend
-//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//     credentials: true, // note: browsers ignore credentials with "*"
-//   })
-// );
-app.use(cors({
-  origin: function(origin, callback) {
-    // allow requests from any origin, but not "*", to work with credentials
-    callback(null, origin); 
+/* ✅ CORS setup – works for any frontend URL and fixes Vercel "*" error */
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow all origins safely
+      callback(null, true);
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+// ✅ Handle preflight requests correctly
+app.options("/*", cors({
+  origin: (origin, callback) => {
+    callback(null, true);
   },
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
-
-// Handle preflight requests correctly
-app.options("*", cors({
-  origin: function(origin, callback) {
-    callback(null, origin);
-  },
-  methods: ["GET","POST","PUT","DELETE","PATCH"],
-  allowedHeaders: ["Content-Type","Authorization"],
-  credentials: true
+  credentials: true,
 }));
 
 // ✅ Stripe webhook route (before JSON middleware)
