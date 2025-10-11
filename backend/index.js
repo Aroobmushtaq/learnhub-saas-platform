@@ -113,7 +113,7 @@ app.get("/", (req, res) => {
 });
 
 // ✅ Handle unknown routes
-app.all("*", (req, res) => {
+app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
