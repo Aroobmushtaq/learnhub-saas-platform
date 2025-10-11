@@ -152,7 +152,6 @@ app.use(
   })
 );
 
-// ✅ Handle preflight requests correctly
 app.options("*", cors({
   origin: (origin, callback) => {
     callback(null, true);
