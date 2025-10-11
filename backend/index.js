@@ -139,15 +139,18 @@ connectDB();
 
 const app = express();
 
-// ✅ Global CORS setup – allows all frontends and preflights
+// ✅ Global CORS setup – allows all frontends safely
 app.use(
   cors({
-    origin: (origin, callback) => callback(null, true), // allow all origins
+    origin: "*", // allow all origins
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    // credentials: true, // only use credentials if specifying specific origin
   })
 );
+
+// ✅ Handle preflight requests safely
+app.options("*", cors()); // safe preflight handling for all routes
 
 // ✅ Stripe webhook route (must come before JSON parser)
 app.post(
@@ -184,3 +187,4 @@ app.use((req, res) => {
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+
