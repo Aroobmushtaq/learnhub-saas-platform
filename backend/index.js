@@ -149,13 +149,25 @@ const app = express();
 //   })
 // );
 app.use(cors({
-  origin: function (origin, callback) {
-    callback(null, true); // allow all origins
+  origin: function(origin, callback) {
+    // allow requests from any origin, but not "*", to work with credentials
+    callback(null, origin); 
   },
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
 }));
+
+// Handle preflight requests correctly
+app.options("*", cors({
+  origin: function(origin, callback) {
+    callback(null, origin);
+  },
+  methods: ["GET","POST","PUT","DELETE","PATCH"],
+  allowedHeaders: ["Content-Type","Authorization"],
+  credentials: true
+}));
+
 // ✅ Stripe webhook route (before JSON middleware)
 app.post(
   "/api/payments/webhook",
