@@ -140,15 +140,22 @@ connectDB();
 const app = express();
 
 // ✅ Global CORS setup (allow all origins)
-app.use(
-  cors({
-    origin: "*", // allow requests from any frontend
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true, // note: browsers ignore credentials with "*"
-  })
-);
-
+// app.use(
+//   cors({
+//     origin: "*", // allow requests from any frontend
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     credentials: true, // note: browsers ignore credentials with "*"
+//   })
+// );
+app.use(cors({
+  origin: function (origin, callback) {
+    callback(null, true); // allow all origins
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
 // ✅ Stripe webhook route (before JSON middleware)
 app.post(
   "/api/payments/webhook",
