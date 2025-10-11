@@ -90,7 +90,7 @@ export const fetchMyCourses = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const token = thunkAPI.getState().auth.user?.token;
-      const res = await axios.get("${BASE_URL}/api/enrollments/my", {
+      const res = await axios.get(`${BASE_URL}/api/enrollments/my`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

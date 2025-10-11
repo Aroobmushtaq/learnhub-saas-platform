@@ -2,7 +2,9 @@ import axios from "axios";
 
 // Create axios instance
 const API = axios.create({
-  baseURL: "https://backend-ten-black-50.vercel.app", // backend base URL
+  // baseURL: "https://backend-ten-black-50.vercel.app", 
+  baseURL: "http://localhost:5000", // backend base URL
+
 });
 
 // Attach token to every request
