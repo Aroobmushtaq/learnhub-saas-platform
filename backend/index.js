@@ -122,6 +122,7 @@
 // const PORT = process.env.PORT || 5000;
 // app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
 import express from "express";
+import serverless from "serverless-http";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./src/config/db.js";
@@ -135,37 +136,26 @@ import instructorRoutes from "./src/routes/instructorRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
 
 dotenv.config();
-connectDB();
+
+// ✅ Connect to database (handle cold starts safely if needed)
+await connectDB();
 
 const app = express();
 
-// ✅ Global CORS setup – allows all frontends safely
-app.use(
-  cors({
-    origin: "*", // allow all origins
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    // credentials: true, // only use credentials if specifying specific origin
-  })
-);
+// ✅ CORS
+app.use(cors({ origin: "*", methods: ["GET","POST","PUT","DELETE","PATCH"], allowedHeaders:["Content-Type","Authorization"] }));
+app.options("*", cors());
 
-// ✅ Handle preflight requests safely
-app.options("*", cors()); // safe preflight handling for all routes
-
-// ✅ Stripe webhook route (must come before JSON parser)
-app.post(
-  "/api/payments/webhook",
-  express.raw({ type: "application/json" }),
-  stripeWebhook
-);
+// ✅ Stripe webhook (raw body)
+app.post("/api/payments/webhook", express.raw({ type: "application/json" }), stripeWebhook);
 
 // ✅ JSON parser
 app.use(express.json());
 
-// ✅ Static uploads folder
+// ✅ Static uploads
 app.use("/uploads", express.static("uploads"));
 
-// ✅ API routes
+// ✅ Routes
 app.use("/api/auth", router);
 app.use("/api/courses", courseRouter);
 app.use("/api/enrollments", enrollmentRoutes);
@@ -175,16 +165,11 @@ app.use("/api/instructor", instructorRoutes);
 app.use("/api/admin", adminRoutes);
 
 // ✅ Test route
-app.get("/", (req, res) => {
-  res.send("✅ Backend running successfully!");
-});
+app.get("/", (req, res) => res.send("✅ Backend running successfully!"));
 
-// ✅ 404 handler
-app.use((req, res) => {
-  res.status(404).json({ message: "Route not found" });
-});
+// ✅ 404
+app.use((req,res)=>res.status(404).json({ message: "Route not found"}));
 
-// ✅ Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
-
+// ❌ REMOVE app.listen()
+// ✅ Export serverless handler
+export const handler = serverless(app);
