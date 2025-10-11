@@ -64,10 +64,10 @@ connectDB();
 
 const app = express();
 
-// ✅ Allowed frontend URLs
+// ✅ Allowed frontend URLs (your deployed + local)
 const allowedOrigins = [
-  "https://frontend-aroobmushtaqs-projects.vercel.app", // ✅ your frontend deployed link (update this)
-  "http://localhost:3000", // ✅ local testing
+  "https://frontend-2hqrwvedv-aroob-mushtaqs-projects.vercel.app", // your actual deployed frontend
+  "http://localhost:3000", // for local development
 ];
 
 // ✅ Global CORS setup
@@ -77,6 +77,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("❌ Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
@@ -85,20 +86,20 @@ app.use(
   })
 );
 
-// ✅ Stripe webhook route (must come before JSON middleware)
+// ✅ Stripe webhook route (before JSON middleware)
 app.post(
   "/api/payments/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
 
-// ✅ JSON parser for all other routes
+// ✅ JSON parser
 app.use(express.json());
 
-// ✅ Static file serving
+// ✅ Static uploads folder
 app.use("/uploads", express.static("uploads"));
 
-// ✅ Main API routes
+// ✅ API routes
 app.use("/api/auth", router);
 app.use("/api/courses", courseRouter);
 app.use("/api/enrollments", enrollmentRoutes);
@@ -109,10 +110,10 @@ app.use("/api/admin", adminRoutes);
 
 // ✅ Test route
 app.get("/", (req, res) => {
-  res.send("✅ Backend is running successfully!");
+  res.send("✅ Backend running successfully!");
 });
 
-// ✅ Handle unknown routes
+// ✅ 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
