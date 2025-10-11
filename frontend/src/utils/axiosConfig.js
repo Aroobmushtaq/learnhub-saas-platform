@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create axios instance
 const API = axios.create({
-  baseURL: "http://localhost:5000/api", // backend base URL
+  baseURL: "https://backend-ihrb2kxy0-aroob-mushtaqs-projects.vercel.app/api", // backend base URL
 });
 
 // Attach token to every request
