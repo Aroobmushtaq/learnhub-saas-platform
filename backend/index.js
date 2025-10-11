@@ -139,29 +139,17 @@ connectDB();
 
 const app = express();
 
-/* ✅ CORS setup – works for any frontend URL and fixes Vercel "*" error */
+// ✅ Global CORS setup – allows all frontends and preflights
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Allow all origins safely
-      callback(null, true);
-    },
+    origin: (origin, callback) => callback(null, true), // allow all origins
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
-app.options("*", cors({
-  origin: (origin, callback) => {
-    callback(null, true);
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-}));
-
-// ✅ Stripe webhook route (before JSON middleware)
+// ✅ Stripe webhook route (must come before JSON parser)
 app.post(
   "/api/payments/webhook",
   express.raw({ type: "application/json" }),
